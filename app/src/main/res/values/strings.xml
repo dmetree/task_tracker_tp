@@ -4,4 +4,11 @@
     <string name="action_delete">Delete</string>
     <string name="action_insert_dummy_data">Insert test data</string>
     <string name="action_delete_all_entries">Delete all</string>
+
+    <string-array name="spinnerStringArray">
+        <item>New</item>
+        <item>Active</item>
+        <item>Done</item>
+    </string-array>
+
 </resources>

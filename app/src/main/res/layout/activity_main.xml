@@ -32,8 +32,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
+        android:hint="What do you want to do?"
         android:inputType="textPersonName"
-        android:text="What do you want to do?"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,8 +47,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
         android:ems="10"
+        android:hint="Are there any particular details?"
         android:inputType="textPersonName"
-        android:text="Are there any particular details?"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/enterTask"
@@ -61,10 +61,32 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
+        android:hint="When will you finish this task?"
         android:inputType="date"
-        android:text="When will you finish this task?"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/enterDetails"
         app:layout_constraintTop_toBottomOf="@+id/enterDetails"/>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="190dp"
+        android:layout_marginStart="8dp"
+        android:entries="@array/spinnerStringArray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="@+id/textView2"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Status:"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/enterDate"
+        app:layout_constraintTop_toBottomOf="@+id/enterDate"/>
 
 </android.support.constraint.ConstraintLayout>
