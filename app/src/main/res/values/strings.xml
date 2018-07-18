@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">task_tracker_tp</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_insert_dummy_data">Insert test data</string>
+    <string name="action_delete_all_entries">Delete all</string>
+</resources>
