@@ -1,17 +1,30 @@
 package com.dvb.task_tracker_tp;
 
+import android.app.DatePickerDialog;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EdgeEffect;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+
+import java.util.Calendar;
 
 public class EditorActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>{
 
+    private static final  String TAG = "EditorActivity";
+
+    private TextView mDisplayDate;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     private EditText mTask;
     private EditText mDetails;
@@ -30,6 +43,37 @@ public class EditorActivity extends AppCompatActivity implements
         mDeadLine = (EditText) findViewById(R.id.enterDate);
         mStatus = (Spinner) findViewById(R.id.spinner);
 
+        mDisplayDate = (TextView) findViewById(R.id.enterDate);
+
+        mDisplayDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        EditorActivity.this,
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        mDateSetListener,
+                        year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month = month + 1;
+                Log.d(TAG, "onDateSet: date: " + day + "/" + month + "/" + year);
+
+                String date = day + "/" + month+ "/" + year;
+                mDisplayDate.setText(date);
+            }
+        };
 
     }
 
