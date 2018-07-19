@@ -114,12 +114,66 @@ public class TaskProvider extends ContentProvider{
 
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int update(Uri uri, ContentValues contentValues, String selection,
+                      String[] selectionArgs) {
+
+        final int match = sUriMatcher.match(uri);
+        switch (match){
+            case TASKS:
+                return updateTask(uri, contentValues, selection, selectionArgs);
+            case TASK_ID:
+                selection = TaskContract.TaskEntry._ID + "=?";
+                selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
+                return updateTask(uri, contentValues, selection, selectionArgs);
+                default:
+                    throw new IllegalArgumentException("Update is not supported for "+ uri);
+        }
     }
 
+    private int updateTask(Uri uri, ContentValues values, String selection,
+                           String[] selectionArgs) {
+
+        if (values.containsKey(TaskContract.TaskEntry.COLUMN_TASK_NAME)){
+            String name = values.getAsString(TaskContract.TaskEntry.COLUMN_TASK_NAME);
+            if (name == null){
+                throw new IllegalArgumentException("What is your task?");
+            }
+        }
+
+        if (values.containsKey(TaskContract.TaskEntry.COLUMN_TASK_DETAILS)){
+            String details = values.getAsString(TaskContract.TaskEntry.COLUMN_TASK_DETAILS);
+            if (details == null){
+                throw new IllegalArgumentException("Won't you add details?");
+            }
+        }
+
+        if (values.containsKey(TaskContract.TaskEntry.COLUMN_TASK_DEADLINE)){
+            String deadline = values.getAsString(TaskContract.TaskEntry.COLUMN_TASK_DEADLINE);
+            if (deadline == null){
+                throw new IllegalArgumentException("When do you want it done?");
+            }
+        }
+
+        if (values.containsKey(TaskContract.TaskEntry.COLUMN_TASK_STATUS)){
+            String status = values.getAsString(TaskContract.TaskEntry.COLUMN_TASK_STATUS);
+            if (status == null){
+                throw new IllegalArgumentException("What's the status of this task?");
+            }
+        }
+
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+        int rowsUpdated = database.update(TaskContract.TaskEntry.TABLE_NAME, values,
+                selection, selectionArgs);
+        if (rowsUpdated != 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsUpdated;
+    }
+
+
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
+    public int delete(Uri uri, @Nullable String s, String[] strings) {
         return 0;
     }
 
