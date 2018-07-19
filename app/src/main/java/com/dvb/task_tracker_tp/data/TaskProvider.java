@@ -1,37 +1,121 @@
 package com.dvb.task_tracker_tp.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 
 public class TaskProvider extends ContentProvider{
 
+    private static final int TASKS = 100;
+    private static final int TASK_ID = 101;
+    private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final String LOG_TAG = TaskProvider.class.getSimpleName();
+
+    static {
+        sUriMatcher.addURI(TaskContract.CONTENT_AUTHORITY, TaskContract.PATH_TASK, TASKS);
+        sUriMatcher.addURI(TaskContract.CONTENT_AUTHORITY, TaskContract.PATH_TASK + "/#", TASK_ID);
+    }
+
+    private TaskDbHelper mDbHelper;
 
     @Override
     public boolean onCreate() {
-        return false;
+        mDbHelper = new TaskDbHelper(getContext());
+        return true;
     }
 
-    @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
-        return null;
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+                        String sortOrder) {
+
+        SQLiteDatabase database = mDbHelper.getReadableDatabase();
+
+        Cursor cursor;
+
+        int match = sUriMatcher.match(uri);
+        switch(match) {
+            case TASKS:
+                cursor = database.query(TaskContract.TaskEntry.TABLE_NAME, projection,
+                        selection, selectionArgs, null, null, sortOrder);
+                break;
+
+            case TASK_ID:
+                selection = TaskContract.TaskEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+
+                cursor = database.query(TaskContract.TaskEntry.TABLE_NAME, projection, selection,
+                        selectionArgs, null, null, sortOrder);
+
+                break;
+
+                default:
+                throw new IllegalArgumentException("Cannot query unknown URI " + uri);
+        }
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return cursor;
     }
 
-    @Nullable
+
+
+
+
     @Override
-    public String getType(@NonNull Uri uri) {
-        return null;
+    public Uri insert(Uri uri, ContentValues contentValues) {
+        final int match = sUriMatcher.match(uri);
+        switch (match){
+            case TASKS:
+                return insertTask(uri, contentValues);
+                default:
+                    throw new IllegalArgumentException("Insertion is not supported for "+uri);
+        }
     }
 
-    @Nullable
+    private Uri insertTask(Uri uri, ContentValues values) {
+        String name = values.getAsString(TaskContract.TaskEntry.COLUMN_TASK_NAME);
+        if (name == null){
+            throw new IllegalArgumentException("What is your task?");
+        }
+
+        String description = values.getAsString(TaskContract.TaskEntry.COLUMN_TASK_DETAILS);
+        if (description == null){
+            throw new IllegalArgumentException("Won't you add details?");
+        }
+
+        String deadline = values.getAsString(TaskContract.TaskEntry.COLUMN_TASK_DEADLINE);
+        if (deadline == null){
+            throw new IllegalArgumentException("When do you want it done?");
+        }
+
+        String status = values.getAsString(TaskContract.TaskEntry.COLUMN_TASK_STATUS);
+        if (status == null){
+            throw new IllegalArgumentException("What's the status of this task?");
+        }
+
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+        long id = database.insert(TaskContract.TaskEntry.TABLE_NAME, null, values);
+        if (id == -1){
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return ContentUris.withAppendedId(uri, id);
+    }
+
+
     @Override
-    public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        return null;
+    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
+        return 0;
     }
 
     @Override
@@ -39,8 +123,56 @@ public class TaskProvider extends ContentProvider{
         return 0;
     }
 
+
+
+
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public String getType(Uri uri) {
+        final int match = sUriMatcher.match(uri);
+        switch (match){
+            case TASKS:
+                return TaskContract.TaskEntry.CONTENT_LIST_TYPE;
+            case TASK_ID:
+                return TaskContract.TaskEntry.CONTENT_ITEM_TYPE;
+
+                default:
+                    throw new IllegalStateException("Unknown URI " + uri + " with match" +
+                    match);
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
