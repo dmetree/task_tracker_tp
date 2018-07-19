@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.EdgeEffect;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,12 +22,12 @@ public class EditorActivity extends AppCompatActivity implements
 
     private static final  String TAG = "EditorActivity";
 
-    private TextView mDisplayDate;
+    private TextView mDeadline;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     private EditText mTask;
     private EditText mDetails;
-    private EditText mDeadLine;
+
     private Spinner mStatus;
 
 
@@ -40,12 +39,10 @@ public class EditorActivity extends AppCompatActivity implements
 
         mTask = (EditText) findViewById(R.id.enterTask);
         mDetails = (EditText) findViewById(R.id.enterDetails);
-        mDeadLine = (EditText) findViewById(R.id.enterDate);
         mStatus = (Spinner) findViewById(R.id.spinner);
+        mDeadline = (TextView) findViewById(R.id.enterDate);
 
-        mDisplayDate = (TextView) findViewById(R.id.enterDate);
-
-        mDisplayDate.setOnClickListener(new View.OnClickListener() {
+        mDeadline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
@@ -71,7 +68,7 @@ public class EditorActivity extends AppCompatActivity implements
                 Log.d(TAG, "onDateSet: date: " + day + "/" + month + "/" + year);
 
                 String date = day + "/" + month+ "/" + year;
-                mDisplayDate.setText(date);
+                mDeadline.setText(date);
             }
         };
 
