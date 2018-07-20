@@ -3,6 +3,7 @@ package com.dvb.task_tracker_tp;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
@@ -13,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +25,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dvb.task_tracker_tp.data.TaskContract;
 
 import java.util.Calendar;
 
@@ -123,6 +127,54 @@ public class EditorActivity extends AppCompatActivity implements
         String detailsString = mTask.getText().toString().trim();
         String deadLineString = mTask.getText().toString().trim();
         String statusString = mTask.getText().toString().trim();
+
+
+//        Check if this is a new task and all field are blank
+        if (mCurrentTaskUri == null &&
+                TextUtils.isEmpty(taskString) &&
+                TextUtils.isEmpty(detailsString) &&
+                TextUtils.isEmpty(deadLineString) &&
+                TextUtils.isEmpty(statusString)) {
+            return;
+        }
+
+        //        Create ContentValues object where columns are the keys
+        // and data from editors are values
+        ContentValues values = new ContentValues();
+        values.put(TaskContract.TaskEntry.COLUMN_TASK_NAME, taskString);
+        values.put(TaskContract.TaskEntry.COLUMN_TASK_DETAILS, detailsString);
+        values.put(TaskContract.TaskEntry.COLUMN_TASK_DEADLINE, deadLineString);
+        values.put(TaskContract.TaskEntry.COLUMN_TASK_STATUS, statusString);
+
+        if (mCurrentTaskUri == null){
+            // New task
+            Uri newUri = getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, values);
+
+            // Toast confirmation if a new taks was added
+            if (newUri == null){
+                Toast.makeText(this, getString(R.string.insert_ok),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.insert_failed),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            // We're updating a task
+            int rowsAffected = getContentResolver().update(mCurrentTaskUri,
+                    values,
+                    null,
+                    null);
+            if (rowsAffected == 0){
+                // Nothing affected - a mistake
+                Toast.makeText(this, getString(R.string.editor_update_failed),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                // Update is ok, new row is here
+                Toast.makeText(this, getString(R.string.editor_task_update_ok),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 

@@ -8,6 +8,11 @@
     <string name="discard">Skip</string>
     <string name="keep_editing">Keep editing</string>
 
+    <string name="insert_ok">Saved</string>
+    <string name="insert_failed">Save failed</string>
+    <string name="editor_update_failed">Editor update failed</string>
+    <string name="editor_task_update_ok">The task has been updated</string>
+
     <string-array name="spinnerStringArray">
         <item>New</item>
         <item>Active</item>
