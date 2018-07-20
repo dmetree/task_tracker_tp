@@ -30,5 +30,15 @@ public class TaskContract {
         public final static String COLUMN_TASK_DEADLINE = "deadline";
         public final static String COLUMN_TASK_STATUS = "status";
 
+        public static final int STATUS_NEW = 0;
+        public static final int STATUS_ACTIVE = 1;
+        public static final int STATUS_DONE = 2;
+
+        public static boolean isValidStatus(int status){
+            if (status == STATUS_NEW || status == STATUS_ACTIVE || status==STATUS_DONE){
+                return true;
+            }
+            return false;
+        }
     }
 }

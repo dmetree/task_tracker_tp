@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="array_state_options">
+        <item>@string/new_state</item>
+        <item>@string/active_state</item>
+        <item>@string/done_state</item>
+    </string-array>
+</resources>

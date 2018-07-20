@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements
         values.put(TaskContract.TaskEntry.COLUMN_TASK_NAME, "Water the flowers");
         values.put(TaskContract.TaskEntry.COLUMN_TASK_DETAILS, "Water the flowers");
         values.put(TaskContract.TaskEntry.COLUMN_TASK_DEADLINE, "7/19/2018");
-        values.put(TaskContract.TaskEntry.COLUMN_TASK_STATUS, "New");
+        values.put(TaskContract.TaskEntry.COLUMN_TASK_STATUS, TaskContract.TaskEntry.STATUS_NEW);
 
         Uri newUri = getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, values);
     }

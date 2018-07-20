@@ -21,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -45,6 +47,8 @@ public class EditorActivity extends AppCompatActivity implements
     private EditText mTask;
     private EditText mDetails;
     private Spinner mStatus;
+
+    private int onStatus = TaskContract.TaskEntry.STATUS_NEW;
 
     private boolean mTaskHasChanged = false;
 
@@ -79,8 +83,8 @@ public class EditorActivity extends AppCompatActivity implements
 
         mTask = (EditText) findViewById(R.id.enterTask);
         mDetails = (EditText) findViewById(R.id.enterDetails);
-        mStatus = (Spinner) findViewById(R.id.spinner);
         mDeadline = (TextView) findViewById(R.id.enterDate);
+        mStatus = (Spinner) findViewById(R.id.spinner);
 
 
         mTask.setOnTouchListener(mTouchListener);
@@ -119,6 +123,43 @@ public class EditorActivity extends AppCompatActivity implements
             }
         };
 
+    }
+
+
+    private void setupSpinner() {
+        // Create adapter for spinner. The list options are from the String array it will use
+        // the spinner will use the default layout
+        ArrayAdapter statusSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.array_state_options, android.R.layout.simple_spinner_item);
+
+        // Specify dropdown layout style - simple list view with 1 item per line
+        statusSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+
+        // Apply the adapter to the spinner
+        mStatus.setAdapter(statusSpinnerAdapter);
+
+        // Set the integer mSelected to the constant values
+        mStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selection = (String) parent.getItemAtPosition(position);
+                if (!TextUtils.isEmpty(selection)) {
+                    if (selection.equals(getString(R.string.active_state))) {
+                        onStatus = TaskContract.TaskEntry.STATUS_ACTIVE;
+                    } else if (selection.equals(getString(R.string.done_state))) {
+                        onStatus = TaskContract.TaskEntry.STATUS_DONE;
+                    } else {
+                        onStatus = TaskContract.TaskEntry.STATUS_NEW;
+                    }
+                }
+            }
+
+            // Because AdapterView is an abstract class, onNothingSelected must be defined
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                onStatus = TaskContract.TaskEntry.STATUS_NEW;
+            }
+        });
     }
 
 

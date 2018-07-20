@@ -13,10 +13,10 @@
     <string name="editor_update_failed">Editor update failed</string>
     <string name="editor_task_update_ok">The task has been updated</string>
 
-    <string-array name="spinnerStringArray">
-        <item>New</item>
-        <item>Active</item>
-        <item>Done</item>
-    </string-array>
+    <string name="new_state">New</string>
+    <string name="active_state">Active</string>
+    <string name="done_state">Done</string>
+
+
 
 </resources>
