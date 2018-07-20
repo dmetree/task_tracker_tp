@@ -93,6 +93,8 @@ public class EditorActivity extends AppCompatActivity implements
         mStatus.setOnTouchListener(mTouchListener);
 
 
+        setupSpinner();
+
         mDeadline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,9 +168,8 @@ public class EditorActivity extends AppCompatActivity implements
         //    Get user input and add it to db
     private void saveTask(){
         String taskString = mTask.getText().toString().trim();
-        String detailsString = mTask.getText().toString().trim();
-        String deadLineString = mTask.getText().toString().trim();
-        String statusString = mTask.getText().toString().trim();
+        String detailsString = mDetails.getText().toString().trim();
+        String deadLineString = mDeadline.getText().toString().trim();
 
 
 //        Check if this is a new task and all field are blank
@@ -176,7 +177,7 @@ public class EditorActivity extends AppCompatActivity implements
                 TextUtils.isEmpty(taskString) &&
                 TextUtils.isEmpty(detailsString) &&
                 TextUtils.isEmpty(deadLineString) &&
-                TextUtils.isEmpty(statusString)) {
+                onStatus == TaskContract.TaskEntry.STATUS_NEW) {
             return;
         }
 
@@ -186,7 +187,7 @@ public class EditorActivity extends AppCompatActivity implements
         values.put(TaskContract.TaskEntry.COLUMN_TASK_NAME, taskString);
         values.put(TaskContract.TaskEntry.COLUMN_TASK_DETAILS, detailsString);
         values.put(TaskContract.TaskEntry.COLUMN_TASK_DEADLINE, deadLineString);
-        values.put(TaskContract.TaskEntry.COLUMN_TASK_STATUS, statusString);
+        values.put(TaskContract.TaskEntry.COLUMN_TASK_STATUS, onStatus);
 
         if (mCurrentTaskUri == null){
             // New task
