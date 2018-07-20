@@ -4,6 +4,9 @@
     <string name="action_delete">Delete</string>
     <string name="action_insert_dummy_data">Insert test data</string>
     <string name="action_delete_all_entries">Delete all</string>
+    <string name="unsaved_changes_dialog_msg">There are unsaved changes</string>
+    <string name="discard">Skip</string>
+    <string name="keep_editing">Keep editing</string>
 
     <string-array name="spinnerStringArray">
         <item>New</item>
