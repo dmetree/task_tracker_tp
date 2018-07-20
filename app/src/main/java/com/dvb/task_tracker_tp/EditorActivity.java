@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
@@ -272,12 +273,50 @@ public class EditorActivity extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return null;
+
+        String [] projection = {
+                TaskContract.TaskEntry._ID,
+                TaskContract.TaskEntry.COLUMN_TASK_NAME,
+                TaskContract.TaskEntry.COLUMN_TASK_DETAILS,
+                TaskContract.TaskEntry.COLUMN_TASK_DEADLINE,
+                TaskContract.TaskEntry.COLUMN_TASK_STATUS };
+
+        return new CursorLoader(this,
+                mCurrentTaskUri,
+                projection,
+                null,
+                null,
+                null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        // Check up
+        if ( cursor == null || cursor.getCount() < 1){
+            return;
+        }
 
+        if (cursor.moveToFirst()){
+            int taskColumnIndex = cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_TASK_NAME);
+            int detailsColumnIndex = cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_TASK_DETAILS);
+            int deadlineColumnIndex = cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_TASK_DEADLINE);
+            int statusColumnIndex = cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_TASK_STATUS);
+
+            //Extract the value from the Cursor
+            String task = cursor.getString(taskColumnIndex);
+            String details = cursor.getString(detailsColumnIndex);
+            String deadline = cursor.getString(deadlineColumnIndex);
+            String status = cursor.getString(statusColumnIndex);
+
+            // update the views
+            mTask.setText(task);
+            mDetails.setText(details);
+            mDeadline.setText(deadline);
+
+            // A little bug with Status
+            //mStatus.set
+
+        }
     }
 
     @Override
