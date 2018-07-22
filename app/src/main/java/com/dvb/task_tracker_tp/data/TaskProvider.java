@@ -95,8 +95,8 @@ public class TaskProvider extends ContentProvider{
             throw new IllegalArgumentException("When do you want it done?");
         }
 
-        String status = values.getAsString(TaskContract.TaskEntry.COLUMN_TASK_STATUS);
-        if (status == null){
+        Integer status = values.getAsInteger(TaskContract.TaskEntry.COLUMN_TASK_STATUS);
+        if (status == null || !TaskContract.TaskEntry.isValidStatus(status)){
             throw new IllegalArgumentException("What's the status of this task?");
         }
 
@@ -155,8 +155,8 @@ public class TaskProvider extends ContentProvider{
         }
 
         if (values.containsKey(TaskContract.TaskEntry.COLUMN_TASK_STATUS)){
-            String status = values.getAsString(TaskContract.TaskEntry.COLUMN_TASK_STATUS);
-            if (status == null){
+            Integer status = values.getAsInteger(TaskContract.TaskEntry.COLUMN_TASK_STATUS);
+            if (status == null || !TaskContract.TaskEntry.isValidStatus(status)){
                 throw new IllegalArgumentException("What's the status of this task?");
             }
         }

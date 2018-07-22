@@ -34,33 +34,31 @@ import com.dvb.task_tracker_tp.data.TaskContract;
 import java.util.Calendar;
 
 public class EditorActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor> {
 
 
     private static final int EXISTING_TASK_LOADER = 0;
+    private static final String TAG = "EditorActivity";
     private Uri mCurrentTaskUri;
-
-    private static final  String TAG = "EditorActivity";
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     private TextView mDeadline;
     private EditText mTask;
     private EditText mDetails;
-    private Spinner mStatus;
+    private Spinner mStatusSpinner;
 
     private int onStatus = TaskContract.TaskEntry.STATUS_NEW;
 
     private boolean mTaskHasChanged = false;
 
-//    Modified the view or not
-    private View.OnTouchListener mTouchListener = new View.OnTouchListener(){
+    //    Modified the view or not
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             mTaskHasChanged = true;
             return false;
         }
     };
-
 
 
     @Override
@@ -72,7 +70,7 @@ public class EditorActivity extends AppCompatActivity implements
         mCurrentTaskUri = intent.getData();
 
         // If there's no task in the Intent, we'll create a new one.
-        if (mCurrentTaskUri == null ){
+        if (mCurrentTaskUri == null) {
             setTitle("Add a Task");
 
         } else {
@@ -84,16 +82,14 @@ public class EditorActivity extends AppCompatActivity implements
         mTask = (EditText) findViewById(R.id.enterTask);
         mDetails = (EditText) findViewById(R.id.enterDetails);
         mDeadline = (TextView) findViewById(R.id.enterDate);
-        mStatus = (Spinner) findViewById(R.id.spinner);
+        mStatusSpinner = (Spinner) findViewById(R.id.spinner);
 
 
         mTask.setOnTouchListener(mTouchListener);
         mDetails.setOnTouchListener(mTouchListener);
         mDeadline.setOnTouchListener(mTouchListener);
-        mStatus.setOnTouchListener(mTouchListener);
+        mStatusSpinner.setOnTouchListener(mTouchListener);
 
-
-        setupSpinner();
 
         mDeadline.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,28 +116,23 @@ public class EditorActivity extends AppCompatActivity implements
                 month = month + 1;
                 Log.d(TAG, "onDateSet: date: " + day + "/" + month + "/" + year);
 
-                String date = day + "/" + month+ "/" + year;
+                String date = day + "/" + month + "/" + year;
                 mDeadline.setText(date);
             }
         };
 
+        setupSpinner();
     }
 
 
     private void setupSpinner() {
-        // Create adapter for spinner. The list options are from the String array it will use
-        // the spinner will use the default layout
         ArrayAdapter statusSpinnerAdapter = ArrayAdapter.createFromResource(this,
-                R.array.array_state_options, android.R.layout.simple_spinner_item);
+                R.array.array_state_options,
+                android.R.layout.simple_spinner_dropdown_item);
 
-        // Specify dropdown layout style - simple list view with 1 item per line
-        statusSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        mStatusSpinner.setAdapter(statusSpinnerAdapter);
 
-        // Apply the adapter to the spinner
-        mStatus.setAdapter(statusSpinnerAdapter);
-
-        // Set the integer mSelected to the constant values
-        mStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
@@ -156,7 +147,6 @@ public class EditorActivity extends AppCompatActivity implements
                 }
             }
 
-            // Because AdapterView is an abstract class, onNothingSelected must be defined
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 onStatus = TaskContract.TaskEntry.STATUS_NEW;
@@ -165,8 +155,8 @@ public class EditorActivity extends AppCompatActivity implements
     }
 
 
-        //    Get user input and add it to db
-    private void saveTask(){
+    //    Get user input and add it to db
+    private void saveTask() {
         String taskString = mTask.getText().toString().trim();
         String detailsString = mDetails.getText().toString().trim();
         String deadLineString = mDeadline.getText().toString().trim();
@@ -189,12 +179,12 @@ public class EditorActivity extends AppCompatActivity implements
         values.put(TaskContract.TaskEntry.COLUMN_TASK_DEADLINE, deadLineString);
         values.put(TaskContract.TaskEntry.COLUMN_TASK_STATUS, onStatus);
 
-        if (mCurrentTaskUri == null){
+        if (mCurrentTaskUri == null) {
             // New task
             Uri newUri = getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, values);
 
-            // Toast confirmation if a new taks was added
-            if (newUri == null){
+            // Toast confirmation if a new task was added
+            if (newUri == null) {
                 Toast.makeText(this, getString(R.string.insert_ok),
                         Toast.LENGTH_SHORT).show();
             } else {
@@ -208,7 +198,7 @@ public class EditorActivity extends AppCompatActivity implements
                     values,
                     null,
                     null);
-            if (rowsAffected == 0){
+            if (rowsAffected == 0) {
                 // Nothing affected - a mistake
                 Toast.makeText(this, getString(R.string.editor_update_failed),
                         Toast.LENGTH_LONG).show();
@@ -219,8 +209,6 @@ public class EditorActivity extends AppCompatActivity implements
             }
         }
     }
-
-
 
 
     @Override
@@ -316,12 +304,12 @@ public class EditorActivity extends AppCompatActivity implements
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
-        String [] projection = {
+        String[] projection = {
                 TaskContract.TaskEntry._ID,
                 TaskContract.TaskEntry.COLUMN_TASK_NAME,
                 TaskContract.TaskEntry.COLUMN_TASK_DETAILS,
                 TaskContract.TaskEntry.COLUMN_TASK_DEADLINE,
-                TaskContract.TaskEntry.COLUMN_TASK_STATUS };
+                TaskContract.TaskEntry.COLUMN_TASK_STATUS};
 
         return new CursorLoader(this,
                 mCurrentTaskUri,
@@ -334,11 +322,11 @@ public class EditorActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         // Check up
-        if ( cursor == null || cursor.getCount() < 1){
+        if (cursor == null || cursor.getCount() < 1) {
             return;
         }
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             int taskColumnIndex = cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_TASK_NAME);
             int detailsColumnIndex = cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_TASK_DETAILS);
             int deadlineColumnIndex = cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_TASK_DEADLINE);
@@ -348,15 +336,28 @@ public class EditorActivity extends AppCompatActivity implements
             String task = cursor.getString(taskColumnIndex);
             String details = cursor.getString(detailsColumnIndex);
             String deadline = cursor.getString(deadlineColumnIndex);
-            String status = cursor.getString(statusColumnIndex);
+            int status = cursor.getInt(statusColumnIndex);
+
+
 
             // update the views
             mTask.setText(task);
             mDetails.setText(details);
             mDeadline.setText(deadline);
 
-            // A little bug with Status
-            //mStatus.set
+
+            switch (status) {
+                case TaskContract.TaskEntry.STATUS_ACTIVE:
+                    mStatusSpinner.setSelection(1);
+                    break;
+                case TaskContract.TaskEntry.STATUS_DONE:
+                    mStatusSpinner.setSelection(2);
+                default:
+                    mStatusSpinner.setSelection(0);
+                    break;
+            }
+
+
 
         }
     }
@@ -366,7 +367,7 @@ public class EditorActivity extends AppCompatActivity implements
         mTask.setText("");
         mDetails.setText("");
         mDeadline.setText("");
-        mStatus.setSelection(0);
+        mStatusSpinner.setSelection(0);
     }
 
 
@@ -380,26 +381,26 @@ public class EditorActivity extends AppCompatActivity implements
                 discardButtonClickListener);
         builder.setNegativeButton(R.string.keep_editing,
                 new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Keep editing" button, so dismiss the dialog
-                // and continue editing the pet.
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            }
-        });
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked the "Keep editing" button, so dismiss the dialog
+                        // and continue editing the pet.
+                        if (dialog != null) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
 
         // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 
-    private void deleteTask(){
-        if (mCurrentTaskUri != null){
+    private void deleteTask() {
+        if (mCurrentTaskUri != null) {
             int rowsDeleted = getContentResolver().delete(mCurrentTaskUri, null,
                     null);
 
-            if (rowsDeleted == 0){
+            if (rowsDeleted == 0) {
                 Toast.makeText(this, "Error with deleting task",
                         Toast.LENGTH_SHORT).show();
             } else {
@@ -408,7 +409,6 @@ public class EditorActivity extends AppCompatActivity implements
         }
         finish();
     }
-
 }
 
 

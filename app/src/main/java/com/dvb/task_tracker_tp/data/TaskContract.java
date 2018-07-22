@@ -35,7 +35,7 @@ public class TaskContract {
         public static final int STATUS_DONE = 2;
 
         public static boolean isValidStatus(int status){
-            if (status == STATUS_NEW || status == STATUS_ACTIVE || status==STATUS_DONE){
+            if (status == STATUS_NEW || status == STATUS_ACTIVE || status == STATUS_DONE){
                 return true;
             }
             return false;

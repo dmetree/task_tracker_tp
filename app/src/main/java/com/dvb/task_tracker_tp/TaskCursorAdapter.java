@@ -40,11 +40,20 @@ public class TaskCursorAdapter extends CursorAdapter{
         String taskName = cursor.getString(nameColumn);
         String taskDetails = cursor.getString(detailsColumn);
         String taskDeadline = cursor.getString(deadLineColumn);
-        String taskStatus = cursor.getString(statusColumn);
+        int taskStatus = cursor.getInt(statusColumn);
+
+
+        if (taskStatus == 0){
+            statusTextView.setText("New");
+        }
+        else if (taskStatus == 1) {
+            statusTextView.setText("Active");
+        } else {
+            statusTextView.setText("Done");
+        }
 
         nameTextView.setText(taskName);
         detailsTextView.setText(taskDetails);
         deadLineTexView.setText(taskDeadline);
-        statusTextView.setText(taskStatus);
     }
 }
