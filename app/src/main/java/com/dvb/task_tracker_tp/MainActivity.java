@@ -15,12 +15,15 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -57,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements
         View emptyView = findViewById(R.id.empty_view);
         taskListView.setEmptyView(emptyView);
 
+//        EditText searchFilter = (EditText)findViewById(R.id.app_bar_search);
+
         mCursorAdapter = new TaskCursorAdapter(this, null);
         taskListView.setAdapter(mCursorAdapter);
 
@@ -73,6 +78,24 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         getLoaderManager().initLoader(TASK_LOADER, null, this);
+
+//        searchFilter.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                (MainActivity.this).mCursorAdapter.getFilter().filter(charSequence);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//
+//            }
+//        });
+
     }
 
 
