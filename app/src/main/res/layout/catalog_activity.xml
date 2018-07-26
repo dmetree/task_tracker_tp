@@ -60,7 +60,7 @@
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@mipmap/plus_btn"
+        app:srcCompat="@android:drawable/ic_menu_add"
         tools:ignore="RtlHardcoded"/>
 
 </android.support.constraint.ConstraintLayout>
