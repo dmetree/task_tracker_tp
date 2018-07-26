@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -25,10 +26,12 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.dvb.task_tracker_tp.data.TaskContract;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -60,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements
         View emptyView = findViewById(R.id.empty_view);
         taskListView.setEmptyView(emptyView);
 
-//        EditText searchFilter = (EditText)findViewById(R.id.app_bar_search);
+
 
         mCursorAdapter = new TaskCursorAdapter(this, null);
         taskListView.setAdapter(mCursorAdapter);
@@ -79,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements
 
         getLoaderManager().initLoader(TASK_LOADER, null, this);
 
+//        EditText searchFilter = (EditText)findViewById(R.id.app_bar_search);
 //        searchFilter.addTextChangedListener(new TextWatcher() {
 //            @Override
 //            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -87,16 +91,22 @@ public class MainActivity extends AppCompatActivity implements
 //
 //            @Override
 //            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                (MainActivity.this).mCursorAdapter.getFilter().filter(charSequence);
+//
 //            }
 //
 //            @Override
 //            public void afterTextChanged(Editable editable) {
-//
+//                filter(editable.toString());
 //            }
-//        });
+
 
     }
+
+//    private void filter(String s){
+//        ArrayList<mCursorAdapter> filteredList = new ArrayList<>();
+//
+//        for (ExampleItem item : )
+//    }
 
 
     private void insertTask() {
@@ -156,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements
         // Inflate the menu options from the res/menu/menu_catalog.xml file.
         // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.menu_catalog, menu);
+
         return true;
     }
 
@@ -163,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
+
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
                 insertTask();
