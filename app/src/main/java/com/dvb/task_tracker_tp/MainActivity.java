@@ -82,31 +82,26 @@ public class MainActivity extends AppCompatActivity implements
 
         getLoaderManager().initLoader(TASK_LOADER, null, this);
 
-//        EditText searchFilter = (EditText)findViewById(R.id.app_bar_search);
-//        searchFilter.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                filter(editable.toString());
-//            }
+        EditText searchFilter = (EditText)findViewById(R.id.searchFilter);
+        searchFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                (MainActivity.this).mCursorAdapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
-//    private void filter(String s){
-//        ArrayList<mCursorAdapter> filteredList = new ArrayList<>();
-//
-//        for (ExampleItem item : )
-//    }
+
 
 
     private void insertTask() {
